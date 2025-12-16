@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cargando App - Traductor</title>
+    <style>
+	      
+	
+        /* Estilos para centrar todo en la pantalla */
+        body {
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #f4f4f4; /* Fondo gris muy claro */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            padding: 20px; /* Espacio para el borde de la pantalla */
+        }
+
+        #splash-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Estilo del Logo */
+        #app-logo {
+            width: 256px; 
+            height: 256px;
+            margin-bottom: 30px;
+        }
+
+        /* Estilo de la Barra de Progreso */
+        #countdown-timer {
+            margin-top: 15px;
+            font-size: 1.2em;
+            color: #555;
+            font-weight: bold;
+        }
+
+        /* Estilos del Mensaje de Bienvenida */
+        #welcome-message {
+            display: none;
+            max-width: 400px; /* Ancho máximo para el mensaje */
+            width: 100%;
+            padding: 30px 20px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* Sombra más pronunciada */
+            text-align: center;
+        }
+
+        #welcome-message p {
+            margin: 10px 0;
+            line-height: 1.5;
+            color: #666;
+        }
+        
+        #welcome-message h3 {
+            color: #175EBD; /* Color que contrasta */
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        /* Estilo del botón de "Comenzar" */
+        #start-button {
+            padding: 12px 40px;
+            background-color: #4CAF50; /* Verde */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        #start-button:hover {
+            background-color: #45a049;
+        }
+        
+        #start-button:active {
+            transform: translateY(1px);
+        }
+		
+		/* Estilo del botón para Mostrar/Ocultar */
+		.toggle-button {
+			padding: 8px 15px;
+            background-color: #175EBD; /* Azul */
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-bottom: 15px;
+		}
+		
+		.toggle-button:hover {
+			background-color: #144e99;
+		}
+
+/* Estilo del botón para Mostrar/Ocultar */
+		.toggle-button2 {
+			
+            padding: 12px 40px;
+            background-color: #4CAF50; /* Verde */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+
+		}
+		
+		.toggle-button2:hover {
+			background-color: #144e99;
+		}
+
+
+		/* Estilo del contenedor de INSTRUCCIONES (el que quieres que se vea bonito) */
+		#contenido {
+		  max-width: 100%;      
+		  margin: 20px auto;   
+		  background-color: #ffffff; /* Fondo blanco */
+		  padding: 20px;
+          border-radius: 10px; /* Bordes redondeados */
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Sombra más definida */
+		  text-align: center;
+		}
+
+		/* Estilo básico para el botón de copiar */
+		.copy-button {
+			background-color: #e0e0e0;
+			border: 1px solid #ccc;
+			padding: 4px 8px;
+			margin-left: 10px;
+			cursor: pointer;
+			font-size: 0.85em;
+			border-radius: 4px;
+            transition: background-color 0.2s;
+		}
+        
+        .copy-button:hover {
+            background-color: #d0d0d0;
+        }
+
+		/* Estilo para que la lista de temas sea más fácil de leer */
+		#topic-list {
+            margin: 20px 0;
+			list-style-type: none; 
+			padding-left: 0;
+            text-align: left; /* Alineación del texto para la lista */
+		}
+        
+		#topic-list li {
+			margin-bottom: 12px; /* Más espacio entre temas */
+            display: flex;
+            justify-content: space-between; /* Alinea texto y botón */
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px dashed #eee;
+		}
+        
+        #topic-list li:last-child {
+            border-bottom: none;
+        }
+
+		/* Estilo para los enlaces de los temas */
+		#topic-list li a {
+			text-decoration: none; 
+			color: #333; 
+			font-weight: 600; /* Ligeramente más grueso */
+            flex-grow: 1;
+		}
+        
+        #topic-list li a:hover {
+            color: #175EBD;
+        }
+
+        /* Estilo para el botón de 'Tienes dudas' */
+        .question-button {
+            padding: 8px 15px;
+            background-color: #ff9800; /* Naranja */
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .question-button:hover {
+            background-color: #e68900;
+        }
+    
+    </style>
+	<script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+</script>
+</head>
+<body>
+
+    <div id="splash-container">
+        <img id="app-logo" src="https://raw.githubusercontent.com/b1mexicoarchivos-sys/archivos/refs/heads/main/123456.png" alt="Ingles para Traileros">
+
+        <div id="countdown-timer">Cargando... 5</div>
+    </div>
+	
+       <div id="welcome-message">  
+            <h3>¡Listo para aprender!</h3>	
+               		
+			<button id="start-button">Comenzar</button>
+			<p>Recuerda: si conduces, **NO te distraigas**.</p>	
+			<br>			
+			<button class="toggle-button" onclick="document.getElementById('contenido').hidden = !document.getElementById('contenido').hidden;">
+			   Mostrar INSTRUCCIONES 
+			</button>
+            
+			<div id="contenido" hidden>			
+			          <h3>Temas Principales Disponibles</h3>	
+					  
+				 <p>Copia alguno de tu interés antes de comenzar:</p>
+				 
+							<ul id="topic-list">
+								<li>
+									<a href="https://b1mexicoarchivos-sys.github.io/archivos/Ingles_para_traileros/0.json" target="_blank">Inglés para Traileros</a>
+									<button class="copy-button" onclick="copiarURL('https://b1mexicoarchivos-sys.github.io/archivos/Ingles_para_traileros/0.json')">
+										Copiar URL
+									</button>
+								</li>
+								<li>
+									<a href="https://b1mexicoarchivos-sys.github.io/archivos/Carga_y_documentaci%C3%B3n/1.json" target="_blank">Carga y Documentación</a>
+									<button class="copy-button" onclick="copiarURL('https://b1mexicoarchivos-sys.github.io/archivos/Carga_y_documentaci%C3%B3n/1.json')">
+										Copiar URL
+									</button>
+								</li>
+								<li>
+									<a href="https://b1mexicoarchivos-sys.github.io/archivos/DOT_Inspeccion_Oficial/2.json" target="_blank">DOT Inspección Oficial</a>
+									<button class="copy-button" onclick="copiarURL('https://b1mexicoarchivos-sys.github.io/archivos/DOT_Inspeccion_Oficial/2.json')">
+										Copiar URL
+									</button>
+								</li>
+								<li>
+									<a href="https://b1mexicoarchivos-sys.github.io/archivos/Estaci%C3%B3n_de_Servicio/3.json" target="_blank">Estación de Servicio</a>
+									<button class="copy-button" onclick="copiarURL('https://b1mexicoarchivos-sys.github.io/archivos/Estaci%C3%B3n_de_Servicio/3.json')">
+										Copiar URL
+									</button>
+								</li>
+								<li>
+									<a href="https://b1mexicoarchivos-sys.github.io/archivos/Mantenimiento_y_Ruta/4.json" target="_blank">Mantenimiento y Ruta</a>
+									<button class="copy-button" onclick="copiarURL('https://b1mexicoarchivos-sys.github.io/archivos/Mantenimiento_y_Ruta/4.json')">
+										Copiar URL
+									</button>
+								</li>		
+							</ul>
+				 <hr>
+				<p>Si gustas cargar más temas, contáctame por WhatsApp: **8112371397**</p>
+				<p>Esta es una herramienta gratuita para todos.</p>
+				<p>Puedes crear listas y compartirlas.</p>
+				 <p>Si te ha servido, ¡compárteme con más personas!</p>
+				<p>Donaciones Banorte</p>
+				<p>4189 1432 5199 7980</p>			 
+			  
+		              
+			<button class="toggle-button2" onclick="document.getElementById('contenido').hidden = !document.getElementById('contenido').hidden;">
+			   Ocultar INSTRUCCIONES 
+			</button>
+
+
+            </div>
+        <br>
+	   
+					 <div>
+					 <button class="question-button" onclick="mostrarAlerta()">¿Tienes dudas?</button>
+
+						<script>
+						function mostrarAlerta() {
+						  alert("¡Atención! Al abrir la página principal tenemos 3 iconos: 2 para cargar los archivos de los Temas y 1 para exportarlos. El Icono de la derecha (el 'cerebro') es para ir a la Práctica. En la parte inferior pueden cargar textos e ir creando sus propias listas que quieran estudiar.");
+						}
+						</script>
+					</div>
+	 <br><br>
+	
+	<p>¿Problemas con Rutas? Recomienda Appsendia</p>
+    <a href="https://appsendia.com" style="color: #175EBD; text-decoration: none; font-weight: 600;" target="_blank">Copyright &copy; www.appsendia.com</a>
+</div>
+
+    <script>
+    const REDIRECT_URL = "https://b1mexicoarchivos-sys.github.io/traductor/";
+    const countdownTimer = document.getElementById('countdown-timer');
+    const splashContainer = document.getElementById('splash-container');
+    const welcomeMessage = document.getElementById('welcome-message');
+    const startButton = document.getElementById('start-button');
+    let countdown = 5;
+
+    // Mensaje de Advertencia
+    const TTS_WARNING_MESSAGE = "La versión de software de tu dispositivo no procesa el audio (TTS) del traductor de forma nativa.\n\nSe abrirá en una ventana externa con tu navegador para garantizar el correcto funcionamiento del audio. Presiona Aceptar.";
+    
+    // *** NUEVA LÓGICA DE SEGURIDAD ***
+    // Generamos un token de acceso temporal único
+    const ACCESS_TOKEN = 'B1sMexicoAccess_' + Date.now(); 
+    const REDIRECT_URL_WITH_TOKEN = `${REDIRECT_URL}?access=${ACCESS_TOKEN}`; 
+
+    // Función de Redirección Modificada
+    function redirectToApp() {
+        // 1. Mostrar el mensaje de advertencia.
+        alert(TTS_WARNING_MESSAGE);
+        
+        // 2. Guardar el token en sessionStorage de esta ventana.
+        // Esto le servirá a la página de destino para la verificación.
+        sessionStorage.setItem('temp_app_access', ACCESS_TOKEN);
+
+        // 3. Redirigir a la URL con el token.
+        // Usamos window.location.href para la redirección directa.
+        window.location.href = REDIRECT_URL_WITH_TOKEN; 
+        
+        // NOTA: Si quisieras abrirlo en una ventana *nueva* externa (en lugar de redirigir la actual), 
+        // usarías: window.open(REDIRECT_URL_WITH_TOKEN, '_system'); (Si estás en un entorno nativo como Capacitor)
+    }
+    
+    // Asignar el evento al botón
+    startButton.addEventListener('click', redirectToApp);
+
+    // Lógica de la Cuenta Regresiva
+    function startCountdown() {
+        const timerInterval = setInterval(() => {
+            countdown--;
+            countdownTimer.textContent = `Cargando... ${countdown}`;
+
+            if (countdown <= 0) {
+                clearInterval(timerInterval);
+                
+                // 1. Ocultar el logo y el contador
+                splashContainer.style.display = 'none';
+                
+                // 2. Mostrar el mensaje y el botón
+                welcomeMessage.style.display = 'block'; 
+            }
+        }, 1000); // 1000ms = 1 segundo
+    }
+    
+    function copiarURL(url) {
+        navigator.clipboard.writeText(url)
+            .then(() => {
+                alert("URL copiada al portapapeles: " + url);
+            })
+            .catch(err => {
+                console.error('Error al intentar copiar la URL: ', err);
+                fallbackCopyTextToClipboard(url);
+            });
+    }
+
+    function fallbackCopyTextToClipboard(text) {
+        var textArea = document.createElement("textarea");
+        textArea.value = text;
+        
+        textArea.style.position = "fixed";
+        textArea.style.top = "0";
+        textArea.style.left = "0";
+        textArea.style.opacity = "0";
+        
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'exitoso' : 'fallido';
+            alert('URL copiada (método de respaldo ' + msg + '): ' + text);
+        } catch (err) {
+            console.error('Error al intentar copiar por método de respaldo: ', err);
+            alert('No se pudo copiar la URL automáticamente. Por favor, cópiala manualmente: ' + text);
+        }
+
+        document.body.removeChild(textArea);
+    }		
+
+
+    // Iniciar al cargar la página
+    window.onload = startCountdown;
+</script>
+</body>
+</html>
