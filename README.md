@@ -1,0 +1,2 @@
+# cup
+traductor_dedicado
